@@ -1,0 +1,87 @@
+/* Driver Performance Module Styles */
+
+/* Progress Bar */
+.progress-sm {
+    height: 20px;
+    width: 60px;
+}
+
+/* Avatar */
+.avatar-sm {
+    width: 40px;
+    height: 40px;
+}
+
+.avatar-placeholder {
+    width: 40px;
+    height: 40px;
+}
+
+/* Performance Metrics */
+.driver-metrics {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Filters and Export */
+.performance-filters {
+    margin-bottom: 1.5rem;
+}
+
+.export-options {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* Progress Bars */
+.progress {
+    border-radius: 0.25rem;
+}
+
+.progress-bar {
+    transition: width .3s ease;
+}
+
+/* Tables */
+.table th {
+    white-space: nowrap;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.performance-score {
+    min-width: 100px;
+}
+
+/* Stats Cards */
+.stats-card {
+    transition: transform .2s;
+}
+
+.stats-card:hover {
+    transform: translateY(-2px);
+}
+
+.stats-icon {
+    font-size: 2rem;
+    opacity: 0.8;
+}
+
+/* Modals */
+.modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+/* Pagination */
+.pagination {
+    font-size: 0.875rem;
+    justify-content: center;
+    margin: 1rem 0;
+}
+
+.page-link {
+    padding: 0.375rem 0.75rem;
+}
