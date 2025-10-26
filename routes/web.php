@@ -347,6 +347,10 @@ Route::prefix('driver-performance')->name('driver-performance.')->middleware(['a
         Route::post('/drivers/metrics', [\App\Http\Controllers\DriverPerformance\DriverController::class, 'updateMetrics'])->name('update-metrics');
         Route::post('/reports/generate', [\App\Http\Controllers\DriverPerformance\ReportController::class, 'generate'])->name('generate-report');
         Route::get('/rankings', [\App\Http\Controllers\DriverPerformance\DashboardController::class, 'rankings'])->name('rankings');
+
+        // Export routes for Admin and Technician
+        Route::get('/export/routes', [\App\Http\Controllers\DriverPerformance\ExportController::class, 'exportRoutes'])->name('export.routes');
+        Route::get('/export/performance', [\App\Http\Controllers\DriverPerformance\ExportController::class, 'exportPerformance'])->name('export.performance');
     });
 
     Route::middleware([RoleMiddleware::class . ':Driver'])->group(function () {

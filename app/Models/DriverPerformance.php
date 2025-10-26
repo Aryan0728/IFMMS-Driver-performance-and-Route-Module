@@ -51,13 +51,13 @@ class DriverPerformance extends Model
             return null;
         }
 
-        $totalDistance = $metrics->sum('total_distance');
-        $totalRoutes = $metrics->sum('routes_completed');
-        $averageFuelEfficiency = $metrics->avg('fuel_efficiency');
-        $averageSpeed = $metrics->avg('average_speed');
+        $totalDistance = $metrics->sum('miles_driven');
+        $totalRoutes = $metrics->sum('deliveries_completed');
+        $averageFuelEfficiency = $metrics->avg('fuel_consumed') > 0 ? $totalDistance / $metrics->avg('fuel_consumed') : 0;
+        $averageSpeed = $metrics->avg('average_speed') ?? 0;
         $onTimePercentage = $metrics->avg('on_time_percentage');
-        $safetyScore = 100 - ($metrics->sum('safety_incidents') * 5 + $metrics->sum('traffic_violations') * 10);
-        $customerRating = $metrics->avg('customer_rating');
+        $safetyScore = 100 - ($metrics->sum('hard_brakes') * 2 + $metrics->sum('rapid_accelerations') * 3 + $metrics->sum('speeding_incidents') * 10);
+        $customerRating = $metrics->avg('customer_rating') ?? 0;
         $performanceScore = round(
             ($onTimePercentage * 0.4) +
             ($safetyScore * 0.3) +

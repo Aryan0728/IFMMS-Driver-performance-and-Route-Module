@@ -11,9 +11,16 @@
                 <i class="fas fa-clipboard-list text-primary"></i> Route Assignments
             </h1>
         </div>
-        <a href="{{ route('route-assignments.create') }}" class="btn btn-primary btn-sm shadow-sm">
-            <i class="fas fa-plus fa-sm text-white-50"></i> Create New Assignment
-        </a>
+        <div>
+            @if(auth()->user()->role === 'Admin' || auth()->user()->role === 'Technician')
+            <a href="{{ route('driver-performance.export.routes') }}" class="btn btn-outline-success btn-sm me-2">
+                <i class="fas fa-download"></i> Export Routes
+            </a>
+            @endif
+            <a href="{{ route('route-assignments.create') }}" class="btn btn-primary btn-sm shadow-sm">
+                <i class="fas fa-plus fa-sm text-white-50"></i> Create New Assignment
+            </a>
+        </div>
     </div>
 
     <!-- Statistics Cards -->

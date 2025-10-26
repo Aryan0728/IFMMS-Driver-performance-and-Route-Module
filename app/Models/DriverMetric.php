@@ -12,7 +12,7 @@ class DriverMetric extends Model
     protected $fillable = [
         'driver_id',
         'vehicle_id',
-        'metric_date',
+        'record_date',
         'total_distance',
         'total_driving_time',
         'fuel_efficiency',
@@ -30,7 +30,7 @@ class DriverMetric extends Model
     ];
 
     protected $casts = [
-        'metric_date' => 'date',
+        'record_date' => 'date',
         'total_distance' => 'decimal:2',
         'total_driving_time' => 'decimal:2',
         'fuel_efficiency' => 'decimal:2',
@@ -87,17 +87,17 @@ class DriverMetric extends Model
         $startDate = $startDate ?? now()->startOfDay();
         switch ($period) {
             case 'daily':
-                return $query->whereDate('metric_date', $startDate);
+                return $query->whereDate('record_date', $startDate);
             case 'weekly':
-                return $query->whereBetween('metric_date', [
+                return $query->whereBetween('record_date', [
                     $startDate->startOfWeek(),
                     $startDate->endOfWeek(),
                 ]);
             case 'monthly':
-                return $query->whereMonth('metric_date', $startDate->month)
-                            ->whereYear('metric_date', $startDate->year);
+                return $query->whereMonth('record_date', $startDate->month)
+                            ->whereYear('record_date', $startDate->year);
             case 'custom':
-                return $query->whereBetween('metric_date', [$startDate, $endDate]);
+                return $query->whereBetween('record_date', [$startDate, $endDate]);
             default:
                 return $query;
         }

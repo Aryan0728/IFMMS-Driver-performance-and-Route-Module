@@ -82,25 +82,21 @@ class TestDataSeeder extends Seeder
                 ];
             }
 
-            $route = Route::create([
-                'route_name' => $routeNames[$i-1],
-                'route_code' => 'RT' . str_pad($i, 3, '0', STR_PAD_LEFT),
-                'description' => "Description for {$routeNames[$i-1]}",
-                'waypoints' => json_encode($waypoints),
-                'total_distance' => rand(20, 200),
-                'estimated_duration' => rand(60, 480),
-                'start_location' => 'Warehouse A',
-                'end_location' => 'Customer Location',
-                'route_type' => 'delivery',
-                'priority' => 'medium',
-                'status' => 'active',
-                'schedule_days' => json_encode(['monday', 'tuesday', 'wednesday', 'thursday', 'friday']),
-                'start_time' => '08:00',
-                'end_time' => '17:00',
-                'fuel_cost_estimate' => rand(25, 150),
-                'special_instructions' => "Special instructions for {$routeNames[$i-1]}",
-                'created_by' => 1, // Assume admin ID 1
-            ]);
+            $route = Route::firstOrCreate(
+                ['route_code' => 'RT' . str_pad($i, 3, '0', STR_PAD_LEFT)],
+                [
+                    'name' => $routeNames[$i-1],
+                    'assigned_driver_id' => $drivers[$i-1]->id,
+                    'vehicle_id' => $vehicles[$i-1]->id,
+                    'start_time' => now()->addDays(rand(0, 7))->setTime(8, 0),
+                    'estimated_end_time' => now()->addDays(rand(0, 7))->setTime(17, 0),
+                    'status' => 'planned',
+                    'optimized_waypoints' => $waypoints,
+                    'estimated_distance' => rand(20, 200),
+                    'estimated_duration' => rand(60, 480),
+                    'notes' => "Special instructions for {$routeNames[$i-1]}",
+                ]
+            );
             $routes[] = $route;
         }
 
@@ -133,7 +129,6 @@ class TestDataSeeder extends Seeder
 
                 DriverMetric::create([
                     'driver_id' => $driver->id,
-                    'vehicle_id' => $vehicles[$index]->id,
                     'record_date' => $date,
                     'miles_driven' => rand(50, 300),
                     'fuel_consumed' => rand(5, 25),

@@ -3,122 +3,155 @@
 @section('content')
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h2">Driver Performance Dashboard</h1>
-        <a href="{{ route('route-management.index') }}" class="btn btn-outline-secondary btn-sm">
-            <i class="fas fa-arrow-left"></i> Back to Routes
-        </a>
+        <h1>Driver Performance Dashboard</h1>
+        <span class="badge bg-secondary">Last {{ $timePeriod }}</span>
     </div>
 
-    <div class="card shadow mb-4">
-        <div class="card-header py-3 bg-primary text-white">
-            <h6 class="m-0 font-weight-bold">Filter Performance</h6>
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Average Score</h5>
+                    <h2>{{ number_format($overallMetrics['avg_score'], 1) }}/100</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">On-Time %</h5>
+                    <h2>{{ number_format($overallMetrics['on_time_avg'], 1) }}%</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-info text-white mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Total Miles</h5>
+                    <h2>{{ number_format($overallMetrics['total_miles']) }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Fuel Consumed</h5>
+                    <h2>{{ number_format($overallMetrics['total_fuel']) }} gal</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">My Performance Overview</h5>
+        <div>
+            @if(auth()->user()->role === 'Admin' || auth()->user()->role === 'Technician')
+            <a href="{{ route('driver-performance.export.performance') }}" class="btn btn-outline-success btn-sm me-2">
+                <i class="fas fa-download"></i> Export Performance
+            </a>
+            @endif
+            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">My Performance Overview</h5>
         </div>
         <div class="card-body">
-            <form method="GET" action="{{ route('driver-performance.index') }}" class="row g-3">
-                <div class="col-md-3">
-                    <label for="period" class="form-label">Period</label>
-                    <select name="period" id="period" class="form-control">
-                        <option value="daily" {{ $period == 'daily' ? 'selected' : '' }}>Daily</option>
-                        <option value="weekly" {{ $period == 'weekly' ? 'selected' : '' }}>Weekly</option>
-                        <option value="monthly" {{ $period == 'monthly' ? 'selected' : '' }}>Monthly</option>
-                        <option value="custom" {{ $period == 'custom' ? 'selected' : '' }}>Custom</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label for="driver_id" class="form-label">Driver</label>
-                    <select name="driver_id" id="driver_id" class="form-control">
-                        <option value="">All Drivers</option>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Driver</th>
+                            <th>Vehicle</th>
+                            <th>Avg Score</th>
+                            <th>Total Miles</th>
+                            <th>On-Time %</th>
+                            <th>Fuel Efficiency</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         @foreach($drivers as $driver)
-                            <option value="{{ $driver->id }}" {{ request('driver_id') == $driver->id ? 'selected' : '' }}>{{ $driver->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label for="start_date" class="form-label">Start Date</label>
-                    <input type="date" name="start_date" id="start_date" class="form-control" value="{{ $startDate }}">
-                </div>
-                <div class="col-md-3">
-                    <label for="end_date" class="form-label">End Date</label>
-                    <input type="date" name="end_date" id="end_date" class="form-control" value="{{ $endDate }}">
-                </div>
-                <div class="col-12">
-                    <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-filter"></i> Apply</button>
-                    <a href="{{ route('driver-performance.index') }}" class="btn btn-secondary btn-sm"><i class="fas fa-times"></i> Clear</a>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    @if(isset($chartData) && $chartData['labels'])
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 bg-primary text-white">
-                <h6 class="m-0 font-weight-bold">Performance Overview</h6>
-            </div>
-            <div class="card-body">
-                <canvas id="performanceChart" style="max-height: 400px;"></canvas>
-            </div>
-        </div>
-    @endif
-
-    <div class="card shadow mb-4">
-        <div class="card-header py-3 bg-primary text-white">
-            <h6 class="m-0 font-weight-bold">Driver Performance</h6>
-        </div>
-        <div class="card-body">
-            @if(isset($performances) && $performances->count() > 0)
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Driver</th>
-                                <th>Total Distance (miles)</th>
-                                <th>Total Routes</th>
-                                <th>Fuel Efficiency (mpg)</th>
-                                <th>Average Speed (mph)</th>
-                                <th>On-Time %</th>
-                                <th>Safety Score</th>
-                                <th>Customer Rating</th>
-                                <th>Performance Score</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($performances as $performance)
-                            <tr>
-                                <td>{{ $performance->driver->name }}</td>
-                                <td>{{ number_format($performance->total_distance, 1) }}</td>
-                                <td>{{ $performance->total_routes }}</td>
-                                <td>{{ number_format($performance->average_fuel_efficiency, 1) }}</td>
-                                <td>{{ number_format($performance->average_speed, 1) }}</td>
-                                <td>{{ number_format($performance->on_time_percentage, 1) }}%</td>
-                                <td>{{ number_format($performance->safety_score, 1) }}</td>
-                                <td>{{ number_format($performance->customer_rating, 1) }}</td>
-                                <td>{{ number_format($performance->performance_score, 1) }}</td>
-                                <td>
-                                    <a href="{{ route('driver-performance.show', $performance->driver->id) }}" class="btn btn-info btn-sm">
+                        @php
+                            $metrics = $driver->metrics;
+                            $totalMiles = $metrics->sum('miles_driven');
+                            $totalFuel = $metrics->sum('fuel_consumed');
+                            $fuelEfficiency = $totalFuel > 0 ? $totalMiles / $totalFuel : 0;
+                        @endphp
+                        <tr>
+                            <td>{{ $driver->name }}</td>
+                            <td>
+                                @if($driver->vehicle)
+                                    {{ $driver->vehicle->make }} {{ $driver->vehicle->model }} ({{ $driver->vehicle->license_plate }})
+                                @else
+                                    <span class="text-muted">No vehicle assigned</span>
+                                @endif
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ $metrics->avg('score') >= 90 ? 'success' : ($metrics->avg('score') >= 80 ? 'warning' : 'danger') }}">
+                                    {{ number_format($metrics->avg('score'), 1) }}
+                                </span>
+                            </td>
+                            <td>{{ number_format($totalMiles) }}</td>
+                            <td>{{ number_format($metrics->avg('on_time_percentage'), 1) }}%</td>
+                            <td>{{ number_format($fuelEfficiency, 1) }} MPG</td>
+                            <td>
+                                @if($driver->isDriver())
+                                <div class="btn-group" role="group">
+                                    <a href="{{ route('driver-performance.show', $driver) }}" class="btn btn-sm btn-primary">
                                         <i class="fas fa-eye"></i> View
                                     </a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @else
-                <div class="text-center py-5">
-                    <i class="fas fa-chart-bar fa-4x text-gray-300 mb-3"></i>
-                    <h5>No performance data available</h5>
-                    <p class="text-muted">Create a new route to assign to drivers and generate performance metrics.</p>
-                    <a href="{{ route('route-management.create') }}" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Create Route
-                    </a>
-                </div>
-            @endif
+                                    @if(auth()->user()->role === 'Admin' || auth()->user()->role === 'Technician')
+                                    <a href="{{ route('driver-performance.edit', $driver->id) }}" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete({{ $driver->id }})">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                    @endif
+                                </div>
+                                @else
+                                <span class="text-muted">N/A</span>
+                                @endif
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
+<script>
+function confirmDelete(driverId) {
+    if (confirm('Are you sure you want to delete this driver? This action cannot be undone.')) {
+        // Create a form to submit DELETE request
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/driver-performance/drivers/${driverId}`;
 
+        // Add CSRF token
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = '_token';
+        csrfToken.value = '{{ csrf_token() }}';
+        form.appendChild(csrfToken);
 
+        // Add method spoofing for DELETE
+        const methodField = document.createElement('input');
+        methodField.type = 'hidden';
+        methodField.name = '_method';
+        methodField.value = 'DELETE';
+        form.appendChild(methodField);
 
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>
 @endsection

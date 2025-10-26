@@ -113,14 +113,13 @@ class DriverAnalyticsService
             ['driver_id' => $driverId, 'record_date' => $date->toDateString()],
             [
                 'vehicle_id' => $driver->vehicle_id,
-                'miles_driven' => $milesDriven,
+                'total_distance' => $milesDriven,
                 'fuel_consumed' => $fuelConsumed,
                 'deliveries_completed' => $deliveriesCompleted,
                 'on_time_percentage' => $onTimePercentage,
-                'hard_brakes' => $hardBrakes,
-                'rapid_accelerations' => $rapidAccelerations,
-                'speeding_incidents' => $speedingIncidents,
-                'score' => $score,
+                'safety_incidents' => $hardBrakes,
+                'traffic_violations' => $speedingIncidents,
+                'idle_time' => $idlingTimeSeconds / 3600, // Convert to hours
                 // Other fields can be updated elsewhere
             ]
         );

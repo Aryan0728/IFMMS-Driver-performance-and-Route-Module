@@ -1,80 +1,61 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid">
-    <h1 class="h2 mb-4">Edit Driver: {{ $driver->user->name }}</h1>
+<div class="container">
+    <h1>Edit Driver Metric</h1>
 
-    <div class="card shadow mb-4">
-        <div class="card-header py-3 bg-primary text-white">
-            <h6 class="m-0 font-weight-bold">Driver Details</h6>
+    <form method="POST" action="{{ route('driver-performance.update', $driver) }}">
+        @csrf
+        @method('PUT')
+
+        <a href="{{ route('driver-performance.show', $driver) }}" class="btn btn-secondary mb-3">Back to Driver Performance</a>
+
+        <div class="form-group">
+            <label for="total_distance">Total Distance (km)</label>
+            <input type="number" step="0.01" name="total_distance" id="total_distance" class="form-control" value="{{ old('total_distance', $metric->total_distance) }}" required>
         </div>
-        <div class="card-body">
-            <form method="POST" action="{{ route('driver-performance.update', $driver) }}">
-                @csrf
-                @method('PUT')
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Name</label>
-                            <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $driver->user->name) }}" required>
-                            @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $driver->user->email) }}" required>
-                            @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mb-3">
-                            <label for="license_number" class="form-label">License Number</label>
-                            <input type="text" name="license_number" id="license_number" class="form-control @error('license_number') is-invalid @enderror" value="{{ old('license_number', $driver->license_number) }}" required>
-                            @error('license_number')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mb-3">
-                            <label for="license_expiry" class="form-label">License Expiry</label>
-                            <input type="date" name="license_expiry" id="license_expiry" class="form-control @error('license_expiry') is-invalid @enderror" value="{{ old('license_expiry', $driver->license_expiry->format('Y-m-d')) }}" required>
-                            @error('license_expiry')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="status" class="form-label">Status</label>
-                            <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" required>
-                                <option value="active" {{ old('status', $driver->status) == 'active' ? 'selected' : '' }}>Active</option>
-                                <option value="inactive" {{ old('status', $driver->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                                <option value="suspended" {{ old('status', $driver->status) == 'suspended' ? 'selected' : '' }}>Suspended</option>
-                            </select>
-                            @error('status')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">Phone</label>
-                            <input type="text" name="phone" id="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone', $driver->phone) }}">
-                            @error('phone')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mb-3">
-                            <label for="emergency_contact" class="form-label">Emergency Contact</label>
-                            <input type="text" name="emergency_contact" id="emergency_contact" class="form-control @error('emergency_contact') is-invalid @enderror" value="{{ old('emergency_contact', $driver->emergency_contact) }}">
-                            @error('emergency_contact')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary">Update Driver</button>
-                <a href="{{ route('driver-performance.show', $driver) }}" class="btn btn-secondary">Cancel</a>
-            </form>
+
+        <div class="form-group">
+            <label for="fuel_consumed">Fuel Consumed (L)</label>
+            <input type="number" step="0.01" name="fuel_consumed" id="fuel_consumed" class="form-control" value="{{ old('fuel_consumed', $metric->fuel_consumed) }}" required>
         </div>
-    </div>
+
+        <div class="form-group">
+            <label for="deliveries_completed">Deliveries Completed</label>
+            <input type="number" name="deliveries_completed" id="deliveries_completed" class="form-control" value="{{ old('deliveries_completed', $metric->deliveries_completed ?? 0) }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="on_time_percentage">On-Time Percentage</label>
+            <input type="number" name="on_time_percentage" id="on_time_percentage" class="form-control" value="{{ old('on_time_percentage', $metric->on_time_percentage ?? 0) }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="safety_incidents">Safety Incidents</label>
+            <input type="number" name="safety_incidents" id="safety_incidents" class="form-control" value="{{ old('safety_incidents', $metric->safety_incidents) }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="traffic_violations">Traffic Violations</label>
+            <input type="number" name="traffic_violations" id="traffic_violations" class="form-control" value="{{ old('traffic_violations', $metric->traffic_violations) }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="customer_rating">Customer Rating</label>
+            <input type="number" step="0.1" name="customer_rating" id="customer_rating" class="form-control" value="{{ old('customer_rating', $metric->customer_rating) }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="overtime_hours">Overtime Hours</label>
+            <input type="number" step="0.01" name="overtime_hours" id="overtime_hours" class="form-control" value="{{ old('overtime_hours', $metric->overtime_hours) }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="idle_time">Idle Time (hours)</label>
+            <input type="number" step="0.01" name="idle_time" id="idle_time" class="form-control" value="{{ old('idle_time', $metric->idle_time) }}" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update Metric</button>
+    </form>
 </div>
 @endsection

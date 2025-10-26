@@ -116,7 +116,7 @@
                                         {{ $index + 1 }}
                                     @endif
                                 </td>
-                                <td class="fw-bold">{{ $performance->driver->user->name }}</td>
+                                <td class="fw-bold">{{ $performance->driver->name }}</td>
                                 <td class="text-center">{{ number_format($performance->total_distance, 1) }}</td>
                                 <td class="text-center">{{ $performance->total_routes }}</td>
                                 <td class="text-center">{{ number_format($performance->average_fuel_efficiency, 1) }}</td>

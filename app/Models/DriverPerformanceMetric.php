@@ -13,7 +13,7 @@ class DriverPerformanceMetric extends Model
     protected $fillable = [
         'driver_id',
         'vehicle_id',
-        'metric_date',
+        'record_date',
         'total_distance',
         'total_driving_time',
         'fuel_efficiency',
@@ -33,7 +33,7 @@ class DriverPerformanceMetric extends Model
     ];
 
     protected $casts = [
-        'metric_date' => 'date',
+        'record_date' => 'date',
         'total_distance' => 'decimal:2',
         'fuel_efficiency' => 'decimal:2',
         'average_speed' => 'decimal:2',
@@ -100,19 +100,19 @@ class DriverPerformanceMetric extends Model
 
     public function scopeThisMonth($query)
     {
-        return $query->whereMonth('metric_date', now()->month)
-                    ->whereYear('metric_date', now()->year);
+        return $query->whereMonth('record_date', now()->month)
+                    ->whereYear('record_date', now()->year);
     }
 
     public function scopeLastMonth($query)
     {
-        return $query->whereMonth('metric_date', now()->subMonth()->month)
-                    ->whereYear('metric_date', now()->subMonth()->year);
+        return $query->whereMonth('record_date', now()->subMonth()->month)
+                    ->whereYear('record_date', now()->subMonth()->year);
     }
 
     public function scopeThisYear($query)
     {
-        return $query->whereYear('metric_date', now()->year);
+        return $query->whereYear('record_date', now()->year);
     }
 
     public function scopeByDriver($query, $driverId)

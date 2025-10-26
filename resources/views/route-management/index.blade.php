@@ -10,6 +10,11 @@
             <h1 class="h2 d-inline">Route Management</h1>
         </div>
         <div class="btn-toolbar mb-2 mb-md-0">
+            @if(auth()->user()->role === 'Admin' || auth()->user()->role === 'Technician')
+            <a href="{{ route('driver-performance.export.routes') }}" class="btn btn-outline-success btn-sm me-2">
+                <i class="fas fa-download"></i> Export Routes
+            </a>
+            @endif
             <a href="{{ route('route-management.create') }}" class="btn btn-sm btn-primary me-2">
                 <i class="fas fa-plus"></i> Create New Route
             </a>
