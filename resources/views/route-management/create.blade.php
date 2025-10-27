@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Map-based waypoint selection
-    var map = L.map('waypoints-map').setView([20.5937, 78.9629], 5);
+    var map = L.map('waypoints-map').setViewV([-17.7134, 178.0650], 7);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
         attribution: '© OpenStreetMap contributors'
