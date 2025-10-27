@@ -163,39 +163,6 @@
             </form>
         </div>
     </div>
-
-    <div class="card border-left-info shadow">
-        <div class="card-header py-3 bg-info text-white">
-            <h6 class="m-0 font-weight-bold">
-                <i class="fas fa-code"></i> Sample Waypoints JSON
-            </h6>
-        </div>
-        <div class="card-body">
-            <pre class="bg-light p-3 rounded">
-[
-    {
-        "name": "Warehouse Start",
-        "lat": 40.7128,
-        "lng": -74.0060
-    },
-    {
-        "name": "Customer Location 1",
-        "lat": 40.7138,
-        "lng": -74.0160
-    },
-    {
-        "name": "Customer Location 2",
-        "lat": 40.7148,
-        "lng": -74.0260
-    },
-    {
-        "name": "Return to Warehouse",
-        "lat": 40.7128,
-        "lng": -74.0060
-    }
-]</pre>
-        </div>
-    </div>
 </div>
 @endsection
 
