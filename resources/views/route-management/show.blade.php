@@ -250,7 +250,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const mapElement = document.getElementById('routeMap');
 
     try {
-        // Get waypoints from PHP as JSON string and parse safely
         const waypointsJson = '{!! addslashes(json_encode($route->optimized_waypoints)) !!}';
         const waypoints = JSON.parse(waypointsJson.replace(/\\/g, ''));
 
@@ -289,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function calculateTotalDistance(waypoints) {
-        // Simple distance calculation (this is approximate)
+        // Simple distance calculation
         if (waypoints.length < 2) return 0;
 
         let totalDistance = 0;
@@ -297,7 +296,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const prev = waypoints[i-1];
             const current = waypoints[i];
             if (prev.lat && prev.lng && current.lat && current.lng) {
-                // Simple distance calculation using Haversine formula approximation
                 const latDiff = (current.lat - prev.lat) * Math.PI / 180;
                 const lngDiff = (current.lng - prev.lng) * Math.PI / 180;
                 const a = Math.sin(latDiff/2) * Math.sin(latDiff/2) +
