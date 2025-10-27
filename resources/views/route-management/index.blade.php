@@ -232,7 +232,6 @@
                             <div class="mt-3">
                                 <h6>Vehicles List</h6>
                                 <ul id="vehicle-list" class="list-group">
-                                    <!-- Vehicle items will be dynamically loaded here -->
                                 </ul>
                             </div>
                         </div>
@@ -258,12 +257,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const gpsTab = document.getElementById('gps');
 
     function showTab(targetId) {
-        // Hide all tabs
         [routesTab, gpsTab].forEach(tab => {
             tab.classList.remove('show', 'active');
         });
 
-        // Show target tab
         if (targetId === '#routes') {
             routesTab.classList.add('show', 'active');
             if (routesLink) routesLink.closest('li').classList.add('active');
@@ -274,13 +271,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (routesLink) routesLink.closest('li').classList.remove('active');
         }
 
-        // Trigger map initialization if GPS is shown
         if (targetId === '#gps') {
             setTimeout(initMap, 100);
         }
     }
 
-    // Activate tab based on URL hash on page load
     const hash = window.location.hash;
     if (hash === '#routes' || hash === '#gps') {
         showTab(hash);
@@ -289,7 +284,6 @@ document.addEventListener('DOMContentLoaded', function() {
         showTab('#gps');
     }
 
-    // Click handlers for sidebar links
     if (routesLink) {
         routesLink.addEventListener('click', function(e) {
             e.preventDefault();
@@ -306,10 +300,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Make table rows clickable
     document.querySelectorAll('#routesTable tbody tr').forEach(row => {
         row.addEventListener('click', function(e) {
-            // Don't trigger if clicking on buttons
             if (!e.target.closest('.btn')) {
                 const viewBtn = this.querySelector('a[title="View Details"]');
                 if (viewBtn) {
@@ -325,13 +317,12 @@ document.addEventListener('DOMContentLoaded', function() {
     let map = null;
     let mapInitialized = false;
 
-    // Initialize map for GPS section
+    // Initialize map
     function initMap() {
         const mapElement = document.getElementById('map');
         if (mapElement && !map) {
-            // Ensure the map container is visible before initializing
             if (mapElement.offsetParent === null) {
-                return; // Not visible yet
+                return;
             }
             map = L.map('map').setView([-17.7134, 178.0650], 8); // Centered on Fiji
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -367,7 +358,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         function plotVehicles(vehicles) {
-            // Clear existing markers
             Object.values(markers).forEach(marker => map.removeLayer(marker));
             markers = {};
 
@@ -380,7 +370,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         function plotActiveRoutes(routes) {
-            // Clear existing route lines
             routeLines.forEach(line => map.removeLayer(line));
             routeLines = [];
 
@@ -399,7 +388,6 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(vehicles => {
                 plotVehicles(vehicles);
-                // Simulate movement every 5 seconds
                 setInterval(() => {
                     fetch('{{ route("route-management.vehicles") }}')
                         .then(response => response.json())
@@ -408,14 +396,13 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => console.error('Error loading vehicles:', error));
 
-        // Fetch and plot active routes (in_progress or planned)
+        // Fetch and plot active routes
         fetch('{{ route("route-management.active-routes") }}')
             .then(response => response.json())
             .then(routes => plotActiveRoutes(routes))
             .catch(error => console.error('Error loading routes:', error));
     }
 
-    // Watch for GPS section visibility (for dynamic changes)
     const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
@@ -430,7 +417,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const gpsSection = document.getElementById('gps');
     if (gpsSection) {
         observer.observe(gpsSection, { attributes: true });
-        // Initial map init if GPS is active
         if (gpsSection.classList.contains('show')) {
             initMap();
         }
